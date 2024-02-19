@@ -1,31 +1,67 @@
-import React from 'react';
-import { CommonClassProps, Photo } from '../types';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useMemo, useRef, useEffect } from 'react';
 import cl from 'classnames';
+
+import { Photo, CommonClassProps } from '../types';
+
 import style from './index.module.scss';
 
 interface PreviewGalleryProps extends CommonClassProps {
-    activePhotoIndex: number;
     photos: Photo[];
+    indexActivePhoto: number;
+    setNewPhoto: (id: number) => void;
 }
+
 export const PreviewGallery: React.FC<PreviewGalleryProps> = ({
-    activePhotoIndex,
-    photos,
     className,
-}) => (
-    <div className={cl(style.previewGallery, className)}>
-        <ul className={style.previewGalleryTrack}>
-            {photos.map((photo) => (
-                <li key={photo.id} className={style.previewGalleryPreview}>
-                    <img
-                        src={photo.preview}
-                        alt={photo.description}
-                        className={style.previewGalleryImage}
-                    />
-                </li>
-            ))}
-        </ul>
-        <div className={style.previewGalleryCover}>
-            {activePhotoIndex + 1} / {photos.length}
+    photos,
+    indexActivePhoto,
+    setNewPhoto,
+}) => {
+    const previewContainer = useRef<HTMLUListElement>(null);
+
+    useEffect(() => {
+        if (!previewContainer.current) {
+            return;
+        }
+
+        previewContainer.current.style.transform = `translate3d(-${
+            indexActivePhoto * 164
+        }px, 0, 0)`;
+    }, [indexActivePhoto]);
+    if (!photos.length) {
+        return null;
+    }
+
+    return (
+        <div className={cl(style.previewGallery, className)}>
+            {useMemo(
+                () => (
+                    <ul
+                        className={style.previewGalleryTrack}
+                        ref={previewContainer}
+                    >
+                        {photos.map((photo, id) => (
+                            <li key={photo.id}>
+                                <button
+                                    className={style.previewGalleryPreview}
+                                    onClick={() => setNewPhoto(id)}
+                                >
+                                    <img
+                                        className={style.previewGalleryImage}
+                                        src={photo.preview}
+                                        alt={photo.description}
+                                    />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                ),
+                []
+            )}
+            <div className={style.previewGalleryCover}>
+                {indexActivePhoto + 1} / {photos.length}
+            </div>
         </div>
-    </div>
-);
+    );
+};

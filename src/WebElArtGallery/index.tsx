@@ -1,47 +1,50 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
 import { Photo } from './types';
-import style from './index.module.scss';
-import { MainPhoto } from './MainPhoto';
+
 import { Navigation } from './Navigation';
 import { PreviewGallery } from './PreviewGallery';
+import { TransitionPhoto } from './TransitionPhoto';
 
-interface WebElArtGallery {
+import style from './index.module.scss';
+
+interface WolfGalleryProps {
     photos: Photo[];
 }
 
-export const WebElArtGallery: React.FC<WebElArtGallery> = ({ photos }) => {
+export const WolfGallery: React.FC<WolfGalleryProps> = ({ photos }) => {
     const [indexActivePhoto, setIndexActivePhoto] = useState(0);
-    const activePhoto = photos[indexActivePhoto];
     const prevPhoto = photos[indexActivePhoto - 1];
     const nextPhoto = photos[indexActivePhoto + 1];
     if (!photos.length) {
         return null;
     }
+
     return (
-        <div className={style.webelartGallery}>
-            <div className={style.webelartGalleryContainer}>
-                <MainPhoto
-                    prevPhoto={prevPhoto}
-                    activePhoto={activePhoto}
-                    nextPhoto={nextPhoto}
-                    className={style.webelartMainPhoto}
+        <div className={style.wolfGallery}>
+            <div className={style.wolfGalleryContainer}>
+                <TransitionPhoto
+                    className={style.wolfGalleryTransitionPhoto}
+                    photos={photos}
+                    indexActivePhoto={indexActivePhoto}
                 />
                 <Navigation
-                    className={style.webelartNavigation}
+                    className={style.wolfGalleryNavigation}
                     disabledPrev={!prevPhoto}
-                    disabledNex={!nextPhoto}
+                    disabledNext={!nextPhoto}
                     onPrevClick={() => {
                         setIndexActivePhoto(indexActivePhoto - 1);
                     }}
                     onNextClick={() => {
-                        setIndexActivePhoto(indexActivePhoto + 11);
+                        setIndexActivePhoto(indexActivePhoto + 1);
                     }}
                 />
             </div>
             <PreviewGallery
-                activePhotoIndex={indexActivePhoto}
+                className={style.wolfGalleryPreviewList}
+                indexActivePhoto={indexActivePhoto}
                 photos={photos}
-                className={style.webelartPreviewList}
+                setNewPhoto={setIndexActivePhoto}
             />
         </div>
     );
