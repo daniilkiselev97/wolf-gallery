@@ -1,4 +1,6 @@
-import { CommonClassProps, Photo } from '../types';
+import { CommonClassProps } from '../types';
+import cl from 'classnames';
+import style from './index.module.scss';
 
 interface NavigationProps extends CommonClassProps {
     disabledPrev: boolean;
@@ -13,4 +15,21 @@ export const Navigation: React.FC<NavigationProps> = ({
     disabledNex,
     onPrevClick,
     onNextClick,
-}) => <div>Navigation</div>;
+}) => (
+    <div className={cl(style.navigation, className)}>
+        <button
+            disabled={disabledPrev}
+            className={cl(style.navigationBtn, style.navigationBtnLeft)}
+            onClick={onPrevClick}
+        >
+            Show previous photo
+        </button>
+        <button
+            disabled={disabledNex}
+            className={cl(style.navigationBtn, style.navigationBtnRight)}
+            onClick={onNextClick}
+        >
+            Show next photo
+        </button>
+    </div>
+);
